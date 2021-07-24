@@ -10,3 +10,4 @@ db_data*
 *.tar*
 *.tar
 *.gz
+*/db
