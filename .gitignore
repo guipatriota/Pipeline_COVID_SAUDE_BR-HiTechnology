@@ -1,1 +1,8 @@
 *.docx
+*keys*.*
+*.sh
+.eggs
+.pytest_cache
+.vscode
+__pycache__
+db_data*
