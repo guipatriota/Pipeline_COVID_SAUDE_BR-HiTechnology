@@ -1,7 +1,11 @@
 from hitweets.colect.colector import Colector
 
 class TestTwitterCommunication:
-	"""Test Twitter API communication.
+	"""**Test Twitter API communication.**
+
+	To run this tests, go to /hitweets/colect folder and run on bash:
+
+	``pytest ../../tests/test_colector.py -v``
 	"""
 	def test_Colector_set_rules(self):
 		"""Test for setting rules on Twitter API.

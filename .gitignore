@@ -6,3 +6,7 @@
 .vscode
 __pycache__
 db_data*
+*.egg-info
+*.tar*
+*.tar
+*.gz
