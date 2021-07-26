@@ -98,7 +98,9 @@ class Colector():
                 except:
                     pass
             except:
-                print('No internet connection.')
+                print('No internet connection.\n')
+                print('Verify if API bearer token on OS ambient variables.')
+                print('Verify your internet connection.')
                 time.sleep(30)
                 # whatchdog.join()
                 # save_stream_process.join()

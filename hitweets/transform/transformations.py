@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import shutil
 
 class Transform():
 	"""Class to get JSON files and prepare them to DB.
@@ -25,9 +26,13 @@ class Transform():
 		self.covid            = []
 		self.saude            = []
 		self.data             = []
+		self.files_to_clean   = []
+		self.data_path = os.path.abspath(os.path.realpath('../colect/data'))
+		self._old_path = os.path.abspath(os.path.realpath('../colect/data/_old'))
 
 	def run(self):
 		filenames = self.get_filenames()
+		self.files_to_clean = filenames
 		
 		for filename in filenames:
 			self.batch_number.append(self.find_batch_number(filename))
@@ -37,13 +42,12 @@ class Transform():
 		files_df = self.return_df_ordered_file(filenames)
 		df = self.get_data_from_files_df(files_df)
 		self.output_df = self.verify_duplicates(df)
-
-		return self.output_df
+		self.clean_files()
+		df = self.output_df
+		return df
 
 	def get_filenames(self):
-		filenames = next(os.walk(os.path.abspath(
-												os.path.realpath('../colect/data'))),
-																												(None, None, []))[2]
+		filenames = next(os.walk(self.data_path),(None, None, []))[2]
 		return filenames
 			
 
@@ -88,7 +92,7 @@ class Transform():
 							len(input_not_parsed_df['matching_rules'][line])):
 					tag = input_not_parsed_df['matching_rules'][line][tag_number]['tag']
 					if 'Covid' in tag:
-						self.covid[line]=True
+						self.covid[-1]=True
 
 	def get_saude_from_file_df(self, input_not_parsed_df):
 		for line in range(len(input_not_parsed_df)):
@@ -97,7 +101,7 @@ class Transform():
 							len(input_not_parsed_df['matching_rules'][line])):
 					tag = input_not_parsed_df['matching_rules'][line][tag_number]['tag']
 					if 'Saúde' in tag:
-						self.saude[line]=True
+						self.saude[-1]=True
 
 
 	def find_batch_number(self, filename):
@@ -137,12 +141,15 @@ class Transform():
 		return cleaned_data_parsed_df
 
 
-	def group_by_rule_and_time_frame_batchs(self):
-		pass
-
-
-	def create_json_output_file(self):
-		pass
+	def clean_files(self):
+		file_number = 0
+		while file_number <= (len(self.files_to_clean)-1):
+			old_file_path = os.path.join(self.data_path, self.files_to_clean[file_number])
+			new_file_path = os.path.join(self._old_path, self.files_to_clean[file_number])
+			shutil.move(old_file_path, new_file_path)
+			print('Moved ', file_number + 1, '-', self.files_to_clean[file_number])
+			file_number += 1
+		
 
 
 def main():
