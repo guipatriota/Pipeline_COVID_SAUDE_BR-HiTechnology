@@ -1,0 +1,9 @@
+README.md
+setup.py
+hitweets.egg-info/PKG-INFO
+hitweets.egg-info/SOURCES.txt
+hitweets.egg-info/dependency_links.txt
+hitweets.egg-info/requires.txt
+hitweets.egg-info/top_level.txt
+tests/__init__.py
+tests/test_coleta.py

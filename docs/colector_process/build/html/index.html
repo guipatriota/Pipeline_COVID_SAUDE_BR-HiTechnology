@@ -1,0 +1,435 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Welcome to hiTweets’s documentation! &mdash; hiTweets v0.1 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> hiTweets
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">Welcome to hiTweets’s documentation!</a></li>
+<li><a class="reference internal" href="#colector-class">Colector Class</a></li>
+<li><a class="reference internal" href="#getexception-class">GetException Class</a></li>
+<li><a class="reference internal" href="#connectionlostexception-class">ConnectionLostException Class</a></li>
+<li><a class="reference internal" href="#tests">Tests</a></li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">hiTweets</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Welcome to hiTweets’s documentation!</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="welcome-to-hitweets-s-documentation">
+<h1>Welcome to hiTweets’s documentation!<a class="headerlink" href="#welcome-to-hitweets-s-documentation" title="Permalink to this headline">¶</a></h1>
+<p>This document aims to describe the use of hiTweets project to colect, store
+into JSON files, process data and input it into a no-SQL data base.</p>
+</div>
+<div class="section" id="colector-class">
+<h1>Colector Class<a class="headerlink" href="#colector-class" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="colector.Colector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colector.</span></span><span class="sig-name descname"><span class="pre">Colector</span></span><a class="headerlink" href="#colector.Colector" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Colector class for Tweets streaming colect.</strong></p>
+<p>Constructor that manages all actions related to interface with Twitter API.
+It will call an enviornment variable called ‘BEARER_TOKEN’ in which the
+bearer token from your account API needs to be stored.</p>
+<p>To start data colection run:</p>
+<p><code class="docutils literal notranslate"><span class="pre">&gt;&gt;&gt;</span> <span class="pre">Colector.run()</span></code></p>
+<p>To stop data colection press:</p>
+<p><code class="docutils literal notranslate"><span class="pre">CTRL</span> <span class="pre">+</span> <span class="pre">C</span></code></p>
+<p>Or close bash session.</p>
+<p><strong>To set your enviornment variable open your terminal and run the 
+following line on bash:</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">export</span> <span class="pre">'BEARER_TOKEN'='&lt;your_bearer_token&gt;'</span></code></p>
+<p><em>Replace &lt;your_bearer_token&gt; with your own bearer token.</em></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.delete_rules">
+<span class="sig-name descname"><span class="pre">delete_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.delete_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>HTTP Method to delete rules of a twitter’s filtered stream configured
+on server side.</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Failed to connect to Twitter.
+Probably due to lack of API bearer token on OS ambient variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response from Twitter API with informations of deleted rules 
+or errors on server side.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>request.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.get_rules">
+<span class="sig-name descname"><span class="pre">get_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.get_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>HTTP Method to get rules of a twitter’s filtered stream configured
+on server side.</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Failed to connect to Twitter.
+Probably due to lack of API bearer token on OS ambient variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response from Twitter API with rules on server side.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>request.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.get_stream">
+<span class="sig-name descname"><span class="pre">get_stream</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.get_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>HTTP method to get stream data.</strong></p>
+<p>This HTTP method gets data from the twitter’s filtered stream with its
+configured parameters and rules for filtering.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Response from Twitter API with stream data.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>request.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.run" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Subprocess to start the streaming and loading data into datalake
+as JSON files containing 200 tweets each.</strong></p>
+<p>The JSON files will be stored at .dataas 
+‘db_datalake_tw_covid_saude_&lt;batch_number&gt;_&lt;file_number&gt;.json’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#colect_exceptions.GetException" title="colect_exceptions.GetException"><strong>colect_exceptions.GetException</strong></a> – Authentication error occurred
+when communication with Twitter API does not succeed.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.save_json_file">
+<span class="sig-name descname"><span class="pre">save_json_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.save_json_file" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Create JSON file from stream data.</strong></p>
+<p>Saves the stream into JSON files with the folowing name structure:
+&lt;self.archive_name_prefix&gt;_&lt;self.batch_number&gt;_&lt;self.file_number&gt;.json
+After .json creation, the &lt;self._data&gt; list is resetted.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.save_stream">
+<span class="sig-name descname"><span class="pre">save_stream</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.save_stream" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Saves the stream into a list.</strong></p>
+<p>The list (&lt;self._data&gt;) is a private variable and each tweet is saved 
+in one element of it.</p>
+<p>Every time &lt;self._data&gt; reaches &lt;self.max_tweets_json&gt; numbers of
+items, the data is saved into an JSON file withsave_jason_file()
+method.</p>
+<p>Every 30 minutes a new batch of files are created for db control
+purposes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.set_rules">
+<span class="sig-name descname"><span class="pre">set_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.set_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>HTTP Method to set rules of a twitter’s filtered stream configured
+on server side.</strong></p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>Exception</strong> – Failed to connect to Twitter.
+Probably due to lack of API bearer token on OS ambient variables.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Response from Twitter API with informations of rules setted 
+or errors on server side.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>request.Response</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colector.Colector.timer_30_minutes">
+<span class="sig-name descname"><span class="pre">timer_30_minutes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colector.Colector.timer_30_minutes" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Timer function for 30 minutes.</strong></p>
+<p>It will return True if the timer is running and False otherwise.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>True if time counter is less than 30 minutes and False
+otherwise.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Bolean</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="getexception-class">
+<h1>GetException Class<a class="headerlink" href="#getexception-class" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="colect_exceptions.GetException">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colect_exceptions.</span></span><span class="sig-name descname"><span class="pre">GetException</span></span><a class="headerlink" href="#colect_exceptions.GetException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates exception mesage for get requests</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Exception</strong> (<em>Built-in Exception</em>) – Inherit all Exception methods and does not stop the thread.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="connectionlostexception-class">
+<h1>ConnectionLostException Class<a class="headerlink" href="#connectionlostexception-class" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="colect_exceptions.ConnectionLostException">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">colect_exceptions.</span></span><span class="sig-name descname"><span class="pre">ConnectionLostException</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">err</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#colect_exceptions.ConnectionLostException" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates exception message when connection is lost.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Exception</strong> (<em>Built-in Exception</em>) – Inherit all Exception methods and does not stop the thread.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="tests">
+<h1>Tests<a class="headerlink" href="#tests" title="Permalink to this headline">¶</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="test_colector.TestTwitterCommunication">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">test_colector.</span></span><span class="sig-name descname"><span class="pre">TestTwitterCommunication</span></span><a class="headerlink" href="#test_colector.TestTwitterCommunication" title="Permalink to this definition">¶</a></dt>
+<dd><p><strong>Test Twitter API communication.</strong></p>
+<p>To run this tests, go to /hitweets/colect folder and run on bash:</p>
+<p><code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">../../tests/test_colector.py</span> <span class="pre">-v</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="test_colector.TestTwitterCommunication.test_Colector_count_rules">
+<span class="sig-name descname"><span class="pre">test_Colector_count_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_colector.TestTwitterCommunication.test_Colector_count_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for rules quantities on Twitter API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_colector.TestTwitterCommunication.test_Colector_delete_rules">
+<span class="sig-name descname"><span class="pre">test_Colector_delete_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_colector.TestTwitterCommunication.test_Colector_delete_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Teste for deleting rules on Twitter API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_colector.TestTwitterCommunication.test_Colector_get_rules">
+<span class="sig-name descname"><span class="pre">test_Colector_get_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_colector.TestTwitterCommunication.test_Colector_get_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for getting rules on Twitter API.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_colector.TestTwitterCommunication.test_Colector_set_rules">
+<span class="sig-name descname"><span class="pre">test_Colector_set_rules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#test_colector.TestTwitterCommunication.test_Colector_set_rules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Test for setting rules on Twitter API.</p>
+</dd></dl>
+
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Guilherme Ditzel Patriota.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
