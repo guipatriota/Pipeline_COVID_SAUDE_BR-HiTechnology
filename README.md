@@ -59,3 +59,9 @@ rule"},
 
 # c. Sobre a arquitetura
 # d. Como subir uma cópia em ambiente local
+1. Clone este repositório em sua máquina local:
+
+``git clone https://github.com/guipatriota/Pipeline_COVID_SAUDE_BR-HiTechnology.git``
+
+2. Altere o arquivo .env da e inclua sua chave de autenticação bearer token
+3. Monte a imagem docker e a execute

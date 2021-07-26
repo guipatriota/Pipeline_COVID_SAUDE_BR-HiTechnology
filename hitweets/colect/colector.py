@@ -1,12 +1,16 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
+
 import requests
+import urllib.request
 import json
 from io import StringIO
 import time
 import colect_exceptions
 import pandas as pd
+from datetime import datetime, timezone
+import threading
 
 
 class Colector():
@@ -47,13 +51,16 @@ class Colector():
         self.archive_name_prefix = 'db_datalake_tw_covid_saude_'
         self.archive_extension = '.json'
         self._bearer_token = os.environ.get("BEARER_TOKEN")
-        self.url_base = "https://api.twitter.com/2/tweets/"
-        self.url_search_rules = self.url_base + "search/stream/rules"
-        self.url_search_stream = self.url_base + "search/stream"
+        self.url_base = "https://api.twitter.com"
+        self.url_search_rules = self.url_base + "/2/tweets/search/stream/rules"
+        self.url_search_stream = self.url_base + "/2/tweets/search/stream"
         self.max_tweets_json = 200
         self.timer_start = 0
-        self.batch_time_window_in_minuts = 30
+        self.batch_time_window_in_minutes = 30
         self.waiting_seconds = 60
+        self.response_line = b''
+        self.whatchdog_counter = 0
+        self.keep_alive = True
     
 
     def run(self):
@@ -68,18 +75,44 @@ class Colector():
             when communication with Twitter API does not succeed.
 
         """
-        try:
-            self.delete_rules()
-            self.set_rules()
-        except:
-            raise colect_exceptions.GetException()
-        try:
-            self.timer_start = time.perf_counter()
-            self.get_stream()
-            self.save_stream()
-            self._stream_whatchdogs()
-        except:
-            pass
+        attempts = 1
+        if self.connect() and attempts >= 1:
+            try:
+                try:
+                    self.delete_rules()
+                    self.set_rules()
+                except:
+                    raise colect_exceptions.GetException()
+                try:
+                    self.timer_start = time.perf_counter()
+                    self.get_stream()
+                    print('\nStarting whatchdog.\n')
+                    whatchdog = threading.Thread(target=self._stream_whatchdogs)
+                    whatchdog.start()
+                    print('\nStarting JSON files creation.\n')
+                    save_stream_process = threading.Thread(target=self.save_stream)
+                    save_stream_process.start()
+                    attempts = 0
+                    
+                    #self.save_stream()
+                except:
+                    pass
+            except:
+                print('No internet connection.')
+                time.sleep(30)
+                # whatchdog.join()
+                # save_stream_process.join()
+            time.sleep(5)
+        else:
+            # whatchdog.join()
+            # save_stream_process.join()
+            print('\nInternet connection down.\n')
+            print('\nRetry in 30 seconds...\n')
+            time.sleep(30)
+            print('\nRestarting processes.\n')
+            self.run()
+
+
 
 
     def _bearer_oauth(self,r):
@@ -95,6 +128,14 @@ class Colector():
         return r
 
 
+    def connect(self):
+        try:
+            urllib.request.urlopen('https://twitter.com')
+            return True
+        except:
+            return False
+
+
     def get_rules(self):
         """**HTTP Method to get rules of a twitter's filtered stream configured
         on server side.**
@@ -105,6 +146,7 @@ class Colector():
         :rtype: request.Response
 
         """
+        print('\nGetting rules from Twitter API server:\n')
         self.response = requests.get(
             self.url_search_rules, 
             auth=self._bearer_oauth,
@@ -136,6 +178,7 @@ class Colector():
         ids = list(map(lambda rule: rule["id"], self.rules["data"]))
 
         payload = {"delete": {"ids": ids}}
+        print('\nDeleting rules:\n')
         self.response = requests.post(
             self.url_search_rules,
             auth=self._bearer_oauth,
@@ -164,12 +207,15 @@ class Colector():
         """
         payload = {"add": self.rules_for_filter}
         try:
+            print('\nSetting rules for Twitter API:\n')
             self.response = requests.post(
                 self.url_search_rules,
                 auth=self._bearer_oauth,
                 json=payload,
             )
         except:
+            print('\nSet rules failed. Verify your \
+                bearer token and connection.\n')
             raise Exception
         if self.response.status_code != 201:
             raise Exception(
@@ -192,6 +238,8 @@ class Colector():
         :return: Response from Twitter API with stream data.
         :rtype: request.Response
         """
+        print('\nStart streamming.\n')
+        self.whatchdog_timer = time.perf_counter()
         self.stream = requests.get(
             self.url_search_stream,
             auth=self._bearer_oauth,
@@ -200,7 +248,6 @@ class Colector():
                     "backfill_minutes": 3},
             stream=True,
         )
-        self.whatchdog_timer = time.perf_counter()
         print(self.stream.status_code)
         if self.stream.status_code != 200:
             raise Exception(
@@ -221,21 +268,33 @@ class Colector():
         :rtype: Bolean
         """
         try:
-            for response_line in self.stream.iter_lines():
-                if (self.whatchdog_timer 
-                    + self.waiting_seconds 
-                    > time.perf_counter() 
-                    and "\r\n" in str(response_line)):
+            keep_alive_period = time.perf_counter() - self.whatchdog_timer
+            if (keep_alive_period > self.waiting_seconds/6 
+                                and self.whatchdog_counter < 1):
+                print('\nKeep-alive whatchdog says:')
+                print('ping\n')
+                self.whatchdog_counter += 1
+                return True
+             
+            elif (keep_alive_period > self.waiting_seconds
+                and self.keep_alive):
+                self.keep_alive = False
+                return True
+
+            elif (self.keep_alive_period < self.waiting_seconds):
+                return True
+
+            else:
+                try:
+                    print('\nConnection lost. Waiting...\n')
+                    self.whatchdog_counter = 0
+                    self.keep_alive = True
                     self.whatchdog_timer = time.perf_counter()
-                else:
-                    try:
-                        time.sleep(self.waiting_seconds)
-                        self.get_rules()
-                        self.delete_rules()
-                        self.set_rules()
-                        self.run()
-                    except:
-                        return False
+                    time.sleep(self.waiting_seconds)
+                    print('Try reconnecting.')
+                    self.run()
+                except:
+                    return False
         except:
             return False
     
@@ -254,15 +313,20 @@ class Colector():
         purposes.
         """
         try:
-            for response_line in self.stream.iter_lines():
-                if response_line:
-                    json_response = json.loads(response_line)
+            for self.response_line in self.stream.iter_lines():
+                if self.response_line == b'':
+                    print('\nTwitter says:')
+                    print('pong\n')
+                    self.keep_alive = True
+                    self.whatchdog_timer = time.perf_counter()
+                    self.whatchdog_counter = 0
+                self._stream_whatchdogs()
+                if self.response_line:
+                    json_response = json.loads(self.response_line)
                     #print(json.dumps(json_response, indent=4, sort_keys=True))
-                    if "\r\n" in str(response_line):
-                        print(json.dumps(json_response))
                     self._data.append(json_response)
                     if len(self._data) % self.max_tweets_json == 0:
-                        print('storing data on batch {}, file {}'.format(
+                        print('Storing data on batch {}, file {}'.format(
                             self.batch_number,
                             self.file_number))
                         if self.timer_30_minutes():
@@ -271,9 +335,10 @@ class Colector():
                             self.timer_start = time.perf_counter()
                             self.save_json_file()
                             self.batch_number +=1
+                            self.file_number = 0
         
         except AttributeError:
-            print("Stream not started.\n")
+            print("\nStream not started.\n")
             time.sleep(self.waiting_seconds)
             print("Starting stream.\n")
             self.run()
@@ -286,10 +351,13 @@ class Colector():
         <self.archive_name_prefix>_<self.batch_number>_<self.file_number>.json
         After .json creation, the <self._data> list is resetted.
         """
+        date = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
         self.archive_name = (self.archive_name_prefix 
                         + str(self.batch_number)
                         + '_' 
-                        + str(self.file_number) 
+                        + str(self.file_number)
+                        + '_'
+                        + date 
                         + self.archive_extension)
         pd.read_json(StringIO(json.dumps(self._data)),
                     orient='records').to_json(os.path.join(
@@ -310,7 +378,7 @@ class Colector():
             otherwise.
         :rtype: Bolean
         """
-        timer_end = self.timer_start + self.batch_time_window_in_minuts*60
+        timer_end = self.timer_start + self.batch_time_window_in_minutes*60
         timer_now = time.perf_counter()
         return timer_now < timer_end
 
