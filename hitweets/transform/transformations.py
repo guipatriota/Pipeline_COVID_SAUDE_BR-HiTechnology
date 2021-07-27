@@ -1,7 +1,6 @@
 import pandas as pd
 import os
 import shutil
-import time
 from datetime import datetime, timezone
 
 class Transform():
@@ -29,9 +28,15 @@ class Transform():
 		self.saude            = []
 		self.data             = []
 		self.files_to_clean   = []
-		self.data_path = os.path.abspath(os.path.realpath('colect/data'))
-		self._old_path = os.path.abspath(os.path.realpath('colect/data/_old'))
-
+		self.this_folder = os.path.abspath(
+				os.path.dirname(os.path.realpath(__file__)))
+		self.data_path = os.path.abspath(
+				os.path.join(self.this_folder,'..','colect/data'))
+		self._old_path = os.path.abspath(
+				os.path.join(self.this_folder,'..','colect/data/_old'))
+		self.datalake_folder = os.path.realpath(
+							os.path.join(self.data_path,'datalake'))
+		
 
 	def run(self):
 		filenames = self.get_filenames()
@@ -158,11 +163,9 @@ class Transform():
 			timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
 			archive_name = ('tw_covid_saude_'
 							+ timestamp 
-							+ '.json')
-			datalake_folder = os.path.realpath(
-							os.path.join('colect','data','datalake'))
+							+ '.json')			
 			print(self.output_df)
-			self.output_df.to_json(os.path.join(datalake_folder, archive_name),
+			self.output_df.to_json(os.path.join(self.datalake_folder, archive_name),
 							orient='records', date_format='iso')
 
 

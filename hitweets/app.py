@@ -1,7 +1,8 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath(os.path.realpath('.')))
-sys.path.insert(1, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
+sys.path.insert(1, os.path.abspath(
+    os.path.dirname(os.path.realpath(__file__))))
 
 from colect.colector import Colector
 from transform.transformations import Transform
@@ -12,15 +13,19 @@ from datetime import datetime, timezone
 def run_colector():
     try:
         start_time = time.perf_counter()
-        batch_time_frame = 120#5*60
+        batch_time_frame = 25*60
         transform_time = start_time + batch_time_frame
         colector = Colector()
         colector.run()
         run_transform = False
         while True:
             now_time = time.perf_counter()
-            files_count = len([name for name in os.listdir('./colect/data')
-                if os.path.isfile(os.path.join('./colect/data',name))])
+            files_count = len([name for name in os.listdir(
+                    os.path.join(os.path.dirname(
+                        os.path.realpath(__file__)),'colect/data'))
+                if os.path.isfile(
+                    os.path.join(os.path.dirname(
+                        os.path.realpath(__file__)),'colect/data',name))])
             if transform_time < now_time and files_count > 0:
                 run_transform = True
             if run_transform:

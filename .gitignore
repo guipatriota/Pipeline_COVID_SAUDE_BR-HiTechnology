@@ -5,7 +5,7 @@
 .pytest_cache
 .vscode
 __pycache__
-db_data*
+*tw_covid_saude_*
 *.egg-info
 *.tar*
 *.tar
