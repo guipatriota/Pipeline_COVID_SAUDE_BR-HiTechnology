@@ -1,6 +1,8 @@
 import pandas as pd
 import os
 import shutil
+import time
+from datetime import datetime, timezone
 
 class Transform():
 	"""Class to get JSON files and prepare them to DB.
@@ -27,24 +29,25 @@ class Transform():
 		self.saude            = []
 		self.data             = []
 		self.files_to_clean   = []
-		self.data_path = os.path.abspath(os.path.realpath('../colect/data'))
-		self._old_path = os.path.abspath(os.path.realpath('../colect/data/_old'))
+		self.data_path = os.path.abspath(os.path.realpath('colect/data'))
+		self._old_path = os.path.abspath(os.path.realpath('colect/data/_old'))
+
 
 	def run(self):
 		filenames = self.get_filenames()
 		self.files_to_clean = filenames
-		
 		for filename in filenames:
 			self.batch_number.append(self.find_batch_number(filename))
 			self.file_number.append(self.find_file_number(filename))
 			self.timestamp.append(self.find_timestamp(filename))
-		
+
 		files_df = self.return_df_ordered_file(filenames)
 		df = self.get_data_from_files_df(files_df)
 		self.output_df = self.verify_duplicates(df)
 		self.clean_files()
-		df = self.output_df
-		return df
+		self.save_transformed_data()
+		
+		return self.output_df
 
 	def get_filenames(self):
 		filenames = next(os.walk(self.data_path),(None, None, []))[2]
@@ -52,8 +55,6 @@ class Transform():
 			
 
 	def get_data_from_files_df(self, files_df):
-		data_folder = os.path.abspath(
-													os.path.realpath('../colect/data'))
 		self.index      = []
 		self.created_at = []
 		self.covid      = []
@@ -61,7 +62,7 @@ class Transform():
 		self.data       = {}
 		for filename in files_df.filenames:
 			input_not_parsed_df = []
-			input_not_parsed_df =  pd.read_json(os.path.join(data_folder, filename))
+			input_not_parsed_df =  pd.read_json(os.path.join(self.data_path, filename))
 			self.get_index_from_file_df(input_not_parsed_df)
 			self.get_created_at_from_file_df(input_not_parsed_df)
 			self.get_covid_from_file_df(input_not_parsed_df)
@@ -144,12 +145,25 @@ class Transform():
 	def clean_files(self):
 		file_number = 0
 		while file_number <= (len(self.files_to_clean)-1):
-			old_file_path = os.path.join(self.data_path, self.files_to_clean[file_number])
-			new_file_path = os.path.join(self._old_path, self.files_to_clean[file_number])
+			old_file_path = os.path.join(
+						self.data_path, self.files_to_clean[file_number])
+			new_file_path = os.path.join(
+						self._old_path, self.files_to_clean[file_number])
 			shutil.move(old_file_path, new_file_path)
 			print('Moved ', file_number + 1, '-', self.files_to_clean[file_number])
 			file_number += 1
-		
+
+
+	def save_transformed_data(self):
+			timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+			archive_name = ('tw_covid_saude_'
+							+ timestamp 
+							+ '.json')
+			datalake_folder = os.path.realpath(
+							os.path.join('colect','data','datalake'))
+			print(self.output_df)
+			self.output_df.to_json(os.path.join(datalake_folder, archive_name),
+							orient='records', date_format='iso')
 
 
 def main():

@@ -1,3 +1,8 @@
+import os
+import sys
+sys.path.insert(0, os.path.abspath(os.path.realpath('.')))
+sys.path.insert(1, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
+
 from colect.colector import Colector
 from transform.transformations import Transform
 import time
@@ -7,7 +12,7 @@ from datetime import datetime, timezone
 def run_colector():
     try:
         start_time = time.perf_counter()
-        batch_time_frame = 60*5#5*60
+        batch_time_frame = 120#5*60
         transform_time = start_time + batch_time_frame
         colector = Colector()
         colector.run()
@@ -20,20 +25,9 @@ def run_colector():
                 run_transform = True
             if run_transform:
                 transf = Transform()
-                df = transf.run()
-                timestamp = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
-                archive_name = ('tw_covid_saude_'
-                        + timestamp 
-                        + '.json')
+                transf.run()
                 run_transform = False
                 transform_time = now_time + batch_time_frame
-                datalake_folder = os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)),
-                        'colect','data','datalake')
-                df.to_json(os.path.join(
-                        os.path.dirname(datalake_folder), archive_name),
-                        orient='records')
-                transf.clean_files()
             
     except Exception as e: print(e)
     print('Stop execution.')

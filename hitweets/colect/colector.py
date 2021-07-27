@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.insert(0, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
+sys.path.insert(0, os.path.abspath(os.path.realpath('.')))
+sys.path.insert(1, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
 
 import requests
 import urllib.request
@@ -67,7 +68,7 @@ class Colector():
         """**Subprocess to start the streaming and loading data into datalake
         as JSON files containing 200 tweets each.**
 
-        The JSON files will be stored at .\data\ as 
+        The JSON files will be stored at data folder as 
         'db_datalake_tw_covid_saude_<batch_number>_<file_number>.json'.
 
 
@@ -283,7 +284,7 @@ class Colector():
                 self.keep_alive = False
                 return True
 
-            elif (self.keep_alive_period < self.waiting_seconds):
+            elif (keep_alive_period < self.waiting_seconds):
                 return True
 
             else:

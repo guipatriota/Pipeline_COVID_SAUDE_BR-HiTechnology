@@ -25,3 +25,11 @@ class ConnectionLostException(Exception):
 	
 	def __str__(self):
 			return 'Connection Lost: {} - Keep-alive signal lost.'.format(self.err)
+
+
+def main():
+    pass
+
+
+if __name__ == "__main__":
+    main()
