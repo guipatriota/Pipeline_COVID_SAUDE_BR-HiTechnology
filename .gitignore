@@ -12,3 +12,5 @@ db_data*
 *.gz
 */db
 mine.env
+_old_requirements.txt
+.env
