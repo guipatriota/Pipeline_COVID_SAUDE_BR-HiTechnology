@@ -1,4 +1,5 @@
 import os
+import signal
 import sys
 sys.path.insert(0, os.path.abspath(os.path.realpath('.')))
 sys.path.insert(1, os.path.abspath(os.path.dirname(os.path.realpath(__file__))))
@@ -62,7 +63,16 @@ class Colector():
         self.response_line = b''
         self.whatchdog_counter = 0
         self.keep_alive = True
-    
+        self.path_to_save = os.path.join(os.path.dirname(
+            os.path.realpath(__file__)), 'data')
+
+    def signal_handler(self, signal, frame):
+        sys.exit(0)
+
+
+    def thread_signal_handler(self, signal, frame):
+        os.kill(os.getpid(), signal.SIGINT)
+
 
     def run(self):
         """**Subprocess to start the streaming and loading data into datalake
@@ -76,8 +86,9 @@ class Colector():
             when communication with Twitter API does not succeed.
 
         """
+        signal.signal(signal.SIGINT, self.signal_handler)
         attempts = 1
-        if self.connect() and attempts >= 1:
+        if self.connection_check() and attempts >= 1:
             try:
                 try:
                     self.delete_rules()
@@ -89,15 +100,17 @@ class Colector():
                     self.get_stream()
                     print('\nStarting whatchdog.\n')
                     whatchdog = threading.Thread(target=self._stream_whatchdogs)
+                    # signal.signal(signal.SIGINT, self.thread_signal_handler)
                     whatchdog.start()
                     print('\nStarting JSON files creation.\n')
                     save_stream_process = threading.Thread(target=self.save_stream)
+                    # signal.signal(signal.SIGINT, self.thread_signal_handler)
                     save_stream_process.start()
                     attempts = 0
                     
                     #self.save_stream()
                 except:
-                    pass
+                    print('Whatchdog start and data saving failed.')
             except:
                 print('No internet connection.\n')
                 print('Verify if API bearer token on OS ambient variables.')
@@ -131,7 +144,7 @@ class Colector():
         return r
 
 
-    def connect(self):
+    def connection_check(self):
         try:
             urllib.request.urlopen('https://twitter.com')
             return True
@@ -364,8 +377,7 @@ class Colector():
                         + self.archive_extension)
         pd.read_json(StringIO(json.dumps(self._data)),
                     orient='records').to_json(os.path.join(
-                        os.path.dirname(os.path.realpath(__file__)),
-                        'data',
+                        self.path_to_save,
                         self.archive_name),
                         orient='records')
         self._data = []

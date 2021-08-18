@@ -10,6 +10,12 @@ COPY requirements.txt .
 RUN /usr/local/bin/python -m pip install --upgrade pip
 RUN python -m pip install -r requirements.txt
 
+# WORKDIR /workspaces/Pipeline_COVID_SAUDE_BR-HiTechnology
+# COPY . .
+# CMD ["hitweets/app.py"]
+# ENTRYPOINT [ "python" ]
+
+
 # [Option] Install Node.js
 # ARG INSTALL_NODE="true"
 # ARG NODE_VERSION="lts/*"
